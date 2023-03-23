@@ -14,6 +14,11 @@ func Root() {
 
 	flag.Parse()
 
+	if *mode == "" {
+		fmt.Println("Missing required mode flag (-m).")
+		return
+	}
+
 	if *target == "" {
 		fmt.Println("Missing required target flag (-t).")
 		return
