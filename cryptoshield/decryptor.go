@@ -5,7 +5,10 @@ import (
 	"crypto/cipher"
 	"crypto/sha512"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -16,12 +19,39 @@ func NewDecryptor() *Decryptor {
 	return &Decryptor{}
 }
 
-func (d *Decryptor) DecryptFile(targetPath, outPath, password string) error {
+func (d *Decryptor) DecryptDir(targetPath, password string, deleteTargets bool) (int, []error) {
+	var (
+		filesFound int
+		decErrors  []error
+	)
+
+	filepath.Walk(targetPath, func(path string, info fs.FileInfo, err error) error {
+		if !info.IsDir() && strings.HasSuffix(path, ".genc") {
+			filesFound++
+
+			err := d.DecryptFile(path, path[:len(path)-5], password, deleteTargets)
+			if err != nil {
+				decErrors = append(decErrors, err)
+			}
+		}
+		return nil
+	})
+
+	return filesFound, decErrors
+}
+
+func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarget bool) error {
 	target, err := os.Open(targetPath)
 	if err != nil {
 		return err
 	}
-	defer target.Close()
+
+	defer func(p string, d bool) {
+		target.Close()
+		if d {
+			os.Remove(targetPath)
+		}
+	}(targetPath, deleteTarget)
 
 	out, err := os.Create(outPath)
 	if err != nil {

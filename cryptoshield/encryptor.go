@@ -6,7 +6,9 @@ import (
 	"crypto/rand"
 	"crypto/sha512"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -17,12 +19,39 @@ func NewEncryptor() *Encryptor {
 	return &Encryptor{}
 }
 
-func (e *Encryptor) EncryptFile(targetPath, outPath, password string) error {
+func (e *Encryptor) EncryptDir(targetPath, password string, deleteTargets bool) (int, []error) {
+	var (
+		filesFound int
+		encErrors  []error
+	)
+
+	filepath.Walk(targetPath, func(path string, info fs.FileInfo, err error) error {
+		if !info.IsDir() {
+			filesFound++
+
+			err := e.EncryptFile(path, path+".genc", password, deleteTargets)
+			if err != nil {
+				encErrors = append(encErrors, err)
+			}
+		}
+		return nil
+	})
+
+	return filesFound, encErrors
+}
+
+func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarget bool) error {
 	target, err := os.Open(targetPath)
 	if err != nil {
 		return err
 	}
-	defer target.Close()
+
+	defer func(p string, d bool) {
+		target.Close()
+		if d {
+			os.Remove(targetPath)
+		}
+	}(targetPath, deleteTarget)
 
 	out, err := os.Create(outPath)
 	if err != nil {
