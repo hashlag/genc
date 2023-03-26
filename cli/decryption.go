@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"cn-oxford/cryptoshield"
+	"genc/cryptoshield"
 	"fmt"
 	"strings"
 

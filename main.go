@@ -1,6 +1,6 @@
 package main
 
-import "cn-oxford/cli"
+import "genc/cli"
 
 func main() {
 	cli.Root()

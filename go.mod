@@ -1,4 +1,4 @@
-module cn-oxford
+module genc
 
 go 1.20
 
