@@ -12,7 +12,7 @@ GENC is a command line file encryption tool written in GoLang. It provides stron
 ## Installation
 
 1. Make sure you have GoLang installed
-2. Clone the repository via `git clone https://github.com/wachttijd/genc`
+2. Clone the repository via `git clone https://github.com/hashlag/genc`
 3. Navigate to the project directory
 4. Build GENC using `go build .`
 5. Try it by running the resulting binary with the `-h` flag!
@@ -78,7 +78,7 @@ genc -m E -t file.txt -p password
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/wachttijd/genc/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/hashlag/genc/main/LICENSE) file for details.
 
 ## Third-Party Libraries
 
