@@ -3,7 +3,9 @@ package cryptoshield
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/hmac"
 	"crypto/sha512"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -59,6 +61,11 @@ func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarg
 	}
 	defer out.Close()
 
+	expectedMAC := make([]byte, 64)
+	if _, err := io.ReadFull(target, expectedMAC); err != nil {
+		return err
+	}
+
 	salt := make([]byte, 48)
 	if _, err := io.ReadFull(target, salt); err != nil {
 		return err
@@ -76,6 +83,8 @@ func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarg
 
 	stream := cipher.NewCTR(block, iv)
 
+	dataMAC := hmac.New(sha512.New, pbkdf2.Key([]byte(password), salt, 524_288, 64, sha512.New))
+
 	buf := make([]byte, 102400)
 
 	for {
@@ -85,7 +94,13 @@ func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarg
 		}
 
 		if n > 0 {
+			_, err := dataMAC.Write(buf[:n])
+			if err != nil {
+				return err
+			}
+
 			stream.XORKeyStream(buf[:n], buf[:n])
+
 			if _, err := out.Write(buf[:n]); err != nil {
 				return err
 			}
@@ -94,6 +109,10 @@ func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarg
 		if err == io.EOF {
 			break
 		}
+	}
+
+	if !hmac.Equal(dataMAC.Sum(nil), expectedMAC) {
+		return fmt.Errorf("wrong password or %s has been CORRUPTED/TAMPERED", targetPath)
 	}
 
 	return nil

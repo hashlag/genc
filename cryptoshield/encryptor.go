@@ -3,6 +3,7 @@ package cryptoshield
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha512"
 	"io"
@@ -59,6 +60,10 @@ func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarg
 	}
 	defer out.Close()
 
+	if _, err := out.Write(make([]byte, 64)); err != nil {
+		return err
+	}
+
 	key, salt, err := e.NewKey(password)
 	if err != nil {
 		return err
@@ -84,6 +89,8 @@ func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarg
 
 	stream := cipher.NewCTR(block, iv)
 
+	mac := hmac.New(sha512.New, pbkdf2.Key([]byte(password), salt, 524_288, 64, sha512.New))
+
 	buf := make([]byte, 102400)
 
 	for {
@@ -94,6 +101,12 @@ func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarg
 
 		if n > 0 {
 			stream.XORKeyStream(buf[:n], buf[:n])
+
+			_, err := mac.Write(buf[:n])
+			if err != nil {
+				return err
+			}
+
 			if _, err := out.Write(buf[:n]); err != nil {
 				return err
 			}
@@ -102,6 +115,13 @@ func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarg
 		if err == io.EOF {
 			break
 		}
+	}
+
+	out.Seek(0, 0)
+
+	_, err = out.Write(mac.Sum(nil))
+	if err != nil {
+		return err
 	}
 
 	return nil
