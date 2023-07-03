@@ -76,7 +76,7 @@ func (d *Decryptor) DecryptFile(targetPath, outPath, password string, deleteTarg
 
 	stream := cipher.NewCTR(block, iv)
 
-	buf := make([]byte, 2048)
+	buf := make([]byte, 102400)
 
 	for {
 		n, err := target.Read(buf)
