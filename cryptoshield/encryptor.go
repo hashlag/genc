@@ -117,7 +117,10 @@ func (e *Encryptor) EncryptFile(targetPath, outPath, password string, deleteTarg
 		}
 	}
 
-	out.Seek(0, 0)
+	_, err = out.Seek(0, 0)
+	if err != nil {
+		return err
+	}
 
 	_, err = out.Write(mac.Sum(nil))
 	if err != nil {
