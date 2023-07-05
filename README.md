@@ -1,15 +1,23 @@
 # GENC — CLI file encryption tool
 
-GENC is a command line file encryption tool written in GoLang. It provides strong encryption via AES-256 and uses PBKDF2 SHA-512 (1 048 576 iterations, 384 bit salt) to derive keys from passwords.
+GENC is a command line file encryption tool written in GoLang. It provides strong encryption via AES-256, integrity verification via HMAC-SHA512 and uses PBKDF2 SHA-512 (1 048 576 iterations, 384 bit salt) to derive keys from passwords.
 
 ## Features
 
 - Single file encryption/decryption
 - Recursive directory encryption/decryption
+- Integrity verification
 - Optional additional prompting to hide passwords from command line history (enabled by default)
-- Autodelete
+- Optional autodeletion of original files after encryption/decryption
+- Compact size `~3MiB`
+- Low RAM consumption
+- Сross-platform
 
 ## Installation
+
+GENC pre-compiled binaries are stored in `bin/` and do not require installation. Just copy the suitable binary to any directory you want. You're ready to go!
+
+## Compilation from source
 
 1. Make sure you have GoLang installed
 2. Clone the repository via `git clone https://github.com/hashlag/genc`

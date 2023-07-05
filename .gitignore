@@ -47,3 +47,6 @@ go.work
 
 # Local testing resources
 localres/
+
+# Always include binaries
+!bin/*
