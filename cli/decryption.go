@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"genc/cryptoshield"
 	"fmt"
+	"genc/cryptoshield"
 	"strings"
 
 	"github.com/Songmu/prompter"
@@ -12,6 +12,8 @@ func DirDecryptionHandler(target, password string, deleteTargets bool) {
 	if password == "" {
 		password = prompter.Password("Password")
 	}
+
+	fmt.Println("\nDecrypting... Please wait...")
 
 	dec := cryptoshield.NewDecryptor()
 
@@ -37,6 +39,8 @@ func SingleFileDecryptionHandler(target, out, password string, deleteTarget bool
 	if password == "" {
 		password = prompter.Password("Password")
 	}
+
+	fmt.Println("\nDecrypting... Please wait...")
 
 	dec := cryptoshield.NewDecryptor()
 

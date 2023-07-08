@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"genc/cryptoshield"
 	"fmt"
+	"genc/cryptoshield"
 
 	"github.com/Songmu/prompter"
 )
@@ -16,6 +16,8 @@ func DirEncryptionHandler(target, password string, deleteTargets bool) {
 			return
 		}
 	}
+
+	fmt.Println("\nEncrypting... Please wait...")
 
 	enc := cryptoshield.NewEncryptor()
 
@@ -41,6 +43,8 @@ func SingleFileEncryptionHandler(target, out, password string, deleteTarget bool
 	if out == "" {
 		out = target + ".genc"
 	}
+
+	fmt.Println("\nEncrypting... Please wait...")
 
 	enc := cryptoshield.NewEncryptor()
 

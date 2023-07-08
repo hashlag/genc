@@ -17,6 +17,13 @@ GENC is a command line file encryption tool written in GoLang. It provides stron
 
 GENC pre-compiled binaries are stored in `bin/` and do not require installation. Just copy the suitable binary to any directory you want. You're ready to go!
 
+Direct links to binaries:
+
+- [Windows x64](https://github.com/hashlag/genc/raw/main/bin/genc-win-amd64.exe)
+- [Windows x32](https://github.com/hashlag/genc/raw/main/bin/genc-win-386.exe)
+- [Linux x64](https://github.com/hashlag/genc/raw/main/bin/genc-linux-amd64)
+- [Linux x32](https://github.com/hashlag/genc/raw/main/bin/genc-linux-386)
+
 ## Compilation from source
 
 1. Make sure you have GoLang installed
