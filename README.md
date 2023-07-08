@@ -2,6 +2,10 @@
 
 GENC is a command line file encryption tool written in GoLang. It provides strong encryption via AES-256, integrity verification via HMAC-SHA512 and uses PBKDF2 SHA-512 (1 048 576 iterations, 384 bit salt) to derive keys from passwords.
 
+## Screenshot
+
+![screenshot](https://raw.githubusercontent.com/hashlag/static/main/genc/genc.gif)
+
 ## Features
 
 - Single file encryption/decryption
